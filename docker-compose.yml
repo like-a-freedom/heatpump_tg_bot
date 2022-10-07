@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  heatpump_tg_bot:
+    build: .
+    container_name: heatpump_tg_bot
+    env_file: .env
+    environment:
+      - TG_API_TOKEN=${TG_API_TOKEN}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+    restart: unless-stopped
+    network_mode: host # cause we need to deal with multicast with heatpump discovery
