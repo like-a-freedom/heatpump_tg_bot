@@ -1,0 +1,6 @@
+.env.sample
+LICENCE
+readme.md
+docker-compose.yaml
+.pytest_cache/*
+.github/*
