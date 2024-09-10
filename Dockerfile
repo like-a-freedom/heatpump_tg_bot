@@ -1,16 +1,14 @@
-FROM python:3.11-slim-buster
+FROM python:3.12-slim AS build
+RUN apt-get -y update && apt install -y gcc
+RUN python3 -m pip install --upgrade pip setuptools
+COPY ./src/requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-RUN apt-get -y update
-RUN apt-get install gcc musl-dev -y
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install --upgrade setuptools
-
-COPY ./src /opt/heatpump_telegram_bot
+FROM python:3.12-slim
 WORKDIR /opt/heatpump_telegram_bot
-
-RUN pip3 install -r requirements.txt
-RUN touch /opt/heatpump_telegram_bot/heatpump_telegram_bot.log
-RUN ln -sf /dev/stdout /opt/heatpump_telegram_bot/heatpump_telegram_bot.log \
-    && ln -sf /dev/stderr /opt/heatpump_telegram_bot/heatpump_telegram_bot.log
-
+COPY --from=build /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+COPY ./src /opt/heatpump_telegram_bot
+RUN touch ./heatpump_telegram_bot.log
+RUN ln -sf /dev/stdout ./heatpump_telegram_bot.log \
+    && ln -sf /dev/stderr ./heatpump_telegram_bot.log
 CMD ["python3", "bot.py"]
