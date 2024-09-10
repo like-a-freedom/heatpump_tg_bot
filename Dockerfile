@@ -1,5 +1,5 @@
 FROM python:3.12-slim AS build
-RUN apt-get -y update && apt install -y gcc
+RUN apt -y update && apt install -y gcc
 RUN python3 -m pip install --upgrade pip setuptools
 COPY ./src/requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
